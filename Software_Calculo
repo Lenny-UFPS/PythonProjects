@@ -1,0 +1,87 @@
+# -*- coding: utf-8 -*-
+"""
+Software - Cálculo básico
+Integrantes: 
+    
+* Javier Eduardo Contreras Castro - 1151828
+* Luis Alfredo Mejias Valero - 1151839
+* Alberto José Vergara Vera - 1151840
+
+"""
+
+#Librerías
+from sympy import *
+from scipy.misc import derivative
+from matplotlib import pyplot
+
+'''
+Sintaxis
+Ejemplos:
+
+2*x**2 [Sintaxis de sympy] --> 2x^2 [Expresión algebraica]
+3*x*sin(ln(x**3)) [Sintaxis de sympy]   --> 3x sin(ln(x^3)) [Expresión algebraica]
+
+Para multiplicar una variable por una constante se coloca el operador *
+y para elevar a determinada potencia con **
+'''
+#Convertir el char 'x' en variable para trabajar cálculos matemáticos
+x = Symbol('x')
+
+#Ingresar la ecuación por teclado
+ecuacion = input("Ingrese la ecuación respecto a [ x ]: ")	
+#Por si se llega a ingresar alguna 'x' en mayúscula
+ecuacion = ecuacion.lower()
+
+#Imprimir el menú guardado en una tupla --> Evita muchos print()
+menu = ("Seleccione una opción:", "1. Derivar", "2. Integrar", "3. Graficar")
+for i in menu:
+	print(i)
+
+#Guardar la opción del usuario ingresada por teclado
+opcion = int(input())
+
+#función para derivar --> diff() aplicado por sympy
+def derivar(ecuacion):
+    y = diff(ecuacion, x)
+    return y.doit()
+
+#función para integrar --> integrate(ecuacion, variable aplicada con Symbol())
+def integrar(ecuacion):
+    y = Integral(ecuacion, x)
+    return y.doit()
+
+#función para establecer la ecuación original a sintaxis de sympy para graficarla
+def ecuacion1(x):
+    global ecuacion
+    return eval(ecuacion)
+
+def primera():
+    global ecuacion
+    return derivar(ecuacion)
+
+def segunda():
+    global ecuacion
+    return integrar(ecuacion)
+
+#Función para graficar
+def tercera():
+    global ecuacion
+    # Valores del eje X que toma el gráfico.
+    x = range(-10, 15)
+    # Graficar ambas funciones.
+    pyplot.plot(x, [ecuacion1(i) for i in x])
+    # Establecer el color de los ejes.
+    pyplot.axhline(0, color="black")
+    pyplot.axvline(0, color="black")
+    # Limitar los valores de los ejes.
+    pyplot.xlim(-10, 10)
+    pyplot.ylim(-10, 10)
+    # Mostrar la gráfica.
+    pyplot.show()
+    
+if opcion == 1:
+    print(f"La derivada de {ecuacion} es {primera()}")
+elif opcion == 2:
+    print(f"La integral de {ecuacion} es {segunda()}")
+else:
+    tercera()
