@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+#Versión 1.1
 """
 Software - Cálculo básico
 Integrantes: 
@@ -27,18 +28,18 @@ y para elevar a determinada potencia con **
 #Convertir el char 'x' en variable para trabajar cálculos matemáticos
 x = Symbol('x')
 
-#Ingresar la ecuación por teclado
-ecuacion = input("Ingrese la ecuación respecto a [ x ]: ")	
-#Por si se llega a ingresar alguna 'x' en mayúscula
-ecuacion = ecuacion.lower()
+#Imprimir el menu guardado en una tupla () --> Evita muchos print()
+menu = ("Seleccione una opción:", "1. Derivar.", "2. Integrar.", "3. Graficar.", "4. Operaciones matriciales.", "5. Resolver sistemas de ecuaciones.")
 
-#Imprimir el menú guardado en una tupla --> Evita muchos print()
-menu = ("Seleccione una opción:", "1. Derivar", "2. Integrar", "3. Graficar")
+#Submenú para las matrices
+menu_matrices = ("\nSeleccione una opción:", "1. Hallar el determinante de la matriz", "2. Hallar la matriz inversa", "3. Matriz transpuesta", "4. Sumar matrices", "5. Restar matrices", "6. Multiplicar matrices", "7. Multiplicar una matriz por un escalar", "8. Factorización por Cholesky")
+
+#Se imprime el menú global
 for i in menu:
 	print(i)
 
 #Guardar la opción del usuario ingresada por teclado
-opcion = int(input())
+opcion = int(input("Opción: "))
 
 #función para derivar --> diff() aplicado por sympy
 def derivar(ecuacion):
@@ -55,15 +56,17 @@ def ecuacion1(x):
     global ecuacion
     return eval(ecuacion)
 
+#Llamar la función derivar en las respuestas
 def primera():
     global ecuacion
     return derivar(ecuacion)
 
+#Llamar la función integrar en las respuestas
 def segunda():
     global ecuacion
     return integrar(ecuacion)
 
-#Función para graficar
+#Graficar la ecuación original
 def tercera():
     global ecuacion
     # Valores del eje X que toma el gráfico.
@@ -78,10 +81,201 @@ def tercera():
     pyplot.ylim(-10, 10)
     # Mostrar la gráfica.
     pyplot.show()
+
+#función para matriz nxn --> Sintaxis de Sympy
+def matriz(filas, columnas):
+    list = []
+    for i in range(filas):
+        for j in range(columnas):
+            list.append(int(input(f"Ingrese el valor de la casilla [{i},{j}]: ")))
+            
+    A = Matrix(filas, columnas, list)
+    return A
+
+#Factorización de Cholesky
+def Cholesky(A):
+    print("\nFactorización por Cholesky: \n")
+    return A.cholesky()
+
+#Hallar el determinante de la matriz
+def determinante(A, filas, columnas):
+    if filas == columnas:
+        print("El determinante de la matriz es: \n")
+        return A.det()
+    else:
+        return "No se puede hallar el determinante del sistema"
+
+#Hallar la matriz inversa de la matriz
+def mInversa(A, filas, columnas):
+    if filas == columnas:
+        print("La matriz inversa es: \n")
+        return A.inv()
+    else:
+        return "No se puede hallar la matriz inversa"
+
+#Hallar la matriz transpuesta
+def transpuesta(A):
+    print("La matriz transpuesta es: \n")
+    return A.transpose()
+
+#Multiplicar matrices
+def multiplicar_matrices(opcion):
+    filas1 = int(input("Cantidad de filas de la Matriz 1: "))
+    columnas1 = int(input("Cantidad de columnas de la Matriz 1: "))
     
+    A = matriz(filas1, columnas1)
+    
+    filas2 = int(input("Cantidad de filas de la Matriz 2: "))
+    columnas2 = int(input("Cantidad de columnas de la Matriz 1: "))
+    
+    B = matriz(filas2, columnas2)
+    
+    if columnas1 == filas2 and opcion == 1:
+        return A * B
+    elif columnas2 == filas1 and opcion == 2:
+        return B * A
+
+#Suma de matrices
+def suma_matrices():
+    filas1 = int(input("Cantidad de filas de la Matriz 1: "))
+    columnas1 = int(input("Cantidad de columnas de la Matriz 1: "))
+    
+    A = matriz(filas1, columnas1)
+    
+    filas2 = int(input("Cantidad de filas de la Matriz 2: "))
+    columnas2 = int(input("Cantidad de columnas de la Matriz 1: "))
+    
+    B = matriz(filas2, columnas2)
+    
+    if filas1 == filas2 and columnas1 == columnas2:
+        return A + B
+    else:
+        return "No se pueden sumar las matrices"
+    
+#Resta de matrices
+def resta_matrices():
+    filas1 = int(input("Cantidad de filas de la Matriz 1: "))
+    columnas1 = int(input("Cantidad de columnas de la Matriz 1: "))
+    
+    A = matriz(filas1, columnas1)
+    
+    filas2 = int(input("Cantidad de filas de la Matriz 2: "))
+    columnas2 = int(input("Cantidad de columnas de la Matriz 1: "))
+
+    B = matriz(filas2, columnas2)
+    
+    if filas1 == filas2 and columnas1 == columnas2:
+        return A - B
+    else:
+        return "No se pueden restar las matrices"
+
+#Multiplicar una matriz por un escalar
+def matriz_por_escalar(escalar, A):
+    return escalar * A
+
+#Vector columna, donde se almacenan los resultados del sistema
+def B(filas):
+    print("\nVector columna, donde se almacenarán los resultados: ")
+    list = []
+    for i in range (filas):
+        list.append(int(input(f"Ingrese el valor de la posición [{i},0]: ")))
+    B = Matrix(filas, 1, list)
+    return B
+
+#Resolver el sistema
+def solution(filas, A):
+    inv = A.inv()
+    b = B(filas)
+    
+    solution = inv * b
+    return solution
+
+def Hermitian(A, filas, columnas):
+    B = A.transpose()
+    validar = A == B and filas ==  columnas
+    
+    return validar
+    
+#Imprimir las respectivas operaciones solicitadas
 if opcion == 1:
+    #Ingresar la ecuación por teclado
+    ecuacion = input("Ingrese la ecuación respecto a [ x ]: ")	
+    print("\n")
+    #Por si se llega a ingresar alguna 'x' en mayúscula
+    ecuacion = ecuacion.lower()
     print(f"La derivada de {ecuacion} es {primera()}")
 elif opcion == 2:
+    #Ingresar la ecuación por teclado
+    ecuacion = input("Ingrese la ecuación respecto a [ x ]: ")	
+    print("\n")
+    #Por si se llega a ingresar alguna 'x' en mayúscula
+    ecuacion = ecuacion.lower()
     print(f"La integral de {ecuacion} es {segunda()}")
-else:
+elif opcion == 3:
+    #Ingresar la ecuación por teclado
+    ecuacion = input("Ingrese la ecuación respecto a [ x ]: ")	
+    print("\n")
+    #Por si se llega a ingresar alguna 'x' en mayúscula
+    ecuacion = ecuacion.lower()
     tercera()
+elif opcion == 4:
+    for i in menu_matrices:
+        print(i)
+        
+    opcion = int(input("Opción: "))
+    if opcion == 1:
+        filas = int(input("Ingrese el número de filas: "))
+        columnas = int(input("Ingrese el número de columnas: "))
+        A = matriz(filas, columnas)
+        deter = determinante(A)
+        print(deter)
+    elif opcion == 2:
+        filas = int(input("Ingrese el número de filas: "))
+        columnas = int(input("Ingrese el número de columnas: "))
+        A = matriz(filas, columnas)
+        inversa = mInversa(A)
+        print(inversa)
+    elif opcion == 3:
+        filas = int(input("Ingrese el número de filas: "))
+        columnas = int(input("Ingrese el número de columnas: "))
+        A = matriz(filas, columnas)
+        trans = transpuesta(A)
+        print(trans)
+    elif opcion == 4:
+        A = suma_matrices()
+        print(A)
+    elif opcion == 5:
+        A = resta_matrices()
+        print(A)
+    elif opcion == 6:
+        print("\nSeleccione una opción: ")
+        print("1. Multiplicar matriz A * matriz B")
+        print("2. Multiplicar matriz B * matriz A")
+        opcion = int(input())
+        A = multiplicar_matrices(opcion)
+        print(A)
+    elif opcion == 7:
+        filas = int(input("Ingrese el número de filas: "))
+        columnas = int(input("Ingrese el número de columnas: "))
+        A = matriz(filas, columnas)
+        escalar = int(input("Escalar por el cual desea multiplicar la matriz: "))
+        operacion = matriz_por_escalar(escalar, A)
+        print(operacion)
+    elif opcion == 8:
+        filas = int(input("Ingrese el número de filas: "))
+        columnas = int(input("Ingrese el número de columnas: "))
+        A = matriz(filas, columnas)
+        validar = Hermitian(A, filas, columnas)
+        if validar:
+            cholesky = Cholesky(A)
+            print(cholesky)
+        else:
+            print("No se puede hallar la factorización por Cholesky")
+    else:
+        print("Error, opción no válida.")
+elif opcion == 5:
+    filas = int(input("Ingrese el número de filas: "))
+    columnas = int(input("Ingrese el número de columnas: "))        #Resolver sistemas de ecuaciones NxN 
+    A = matriz(filas, columnas)
+    solve = solution(filas, A)
+    print(f"\nLa solución del sistema es: {solve}")
